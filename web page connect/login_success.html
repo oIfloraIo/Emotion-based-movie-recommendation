@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 성공</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .message {
+            margin: 20px 0;
+            color: #555;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .button-container button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="username">반갑습니다!</h1>
+        <div class="message">
+            Login 되었습니다! 감정픽스에서 즐거운 시간되세요!
+        </div>
+        <div class="button-container">
+            <button onclick="goToBoardList()">Go to Board</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+    <script>
+        function goToBoardList() {
+            window.location.href = "board.php";
+        }
+        function logout() {
+            window.location.href = "Logout.php";
+        }
+
+        // 세션 스토리지에서 username 가져와서 표시
+        document.getElementById('username').innerText = `반갑습니다, ${sessionStorage.getItem('username')} 님!`;
+    </script>
+</body>
+</html>

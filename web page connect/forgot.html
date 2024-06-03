@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>아이디/비밀번호 찾기</title>
+  <style>
+    /* CSS 코드 */
+    body {
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 400px;
+      height: 400px;
+      border: 1px solid #ccc;
+      background-color: #f4f4f4;
+    }
+    h2 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .input-row {
+      display: flex;
+      align-items: center;
+    }
+    .input-label {
+      font-size: 18px;
+      margin-right: 10px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    input[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>&#128274; 아이디/비밀번호 찾기 &#128274;</h2>
+    <form action="forgot.php" method="post">
+      <div class="form-group">
+        <div class="input-row">
+          <label for="username" class="input-label">이름:</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+      </div>
+      <input type="submit" value="찾기">
+    </form>
+  </div>
+</body>
+</html>
