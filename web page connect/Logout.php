@@ -13,7 +13,19 @@ if (ini_get("session.use_cookies")) {
 
 session_destroy(); // 세션 종료
 
-// 로그인 페이지 이동
-header("Location: Login_page.html");
+// JavaScript를 포함한 HTML 페이지로 리다이렉션
+echo '<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>로그아웃</title>
+    <script>
+        alert("로그아웃 되었습니다!");
+        window.location.href = "Login_page.html";
+    </script>
+</head>
+<body>
+</body>
+</html>';
 exit;
 ?>
