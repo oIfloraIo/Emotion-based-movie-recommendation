@@ -13,38 +13,39 @@ def emotion_genre_mapping(emotion):
     }
     return emotion_genre_mapping.get(emotion, [])
 
-# 감정과 장르를 기반으로 영화 추천하는 함수 (랜덤 선택 포함)
-def recommend_by_emotion(emotion, movies, num_recommendations=10):
-    genres = emotion_genre_mapping(emotion)
-    if not genres:
-        return []
-    
-    # 장르 기반으로 영화 필터링
-    genre_filtered_movies = movies[movies['genres'].apply(lambda x: any(genre in x for genre in genres))]
-    
-    # 평점이 평균 이상인 영화 필터링
-    avg_vote = genre_filtered_movies['vote_average'].mean()
-    high_rated_movies = genre_filtered_movies[genre_filtered_movies['vote_average'] >= avg_vote]
-    
-    # 높은 평점의 영화들 중에서 랜덤으로 num_recommendations개 선택
-    recommended_movies = high_rated_movies.sample(n=num_recommendations, replace=False)
-    
-    return recommended_movies['title'].tolist()
-
-# 타입 1: 장르만 고려하여 추천
+# type 1 인 경우 인기도 / 평점 기반 추천
 def recommend_type1(movies, num_recommendations=10):
-    # 상위 50개 영화 중 랜덤으로 num_recommendations개 선택
     top_movies = movies.sort_values(by=['popularity', 'vote_average'], ascending=False).head(50)
     recommended_movies = top_movies.sample(n=num_recommendations, replace=False)
     return recommended_movies['title'].tolist()
 
-# 타입 2: 감정과 장르를 고려하여 추천
-def recommend_type2(input_emotion, movies, num_recommendations=10):
-    recommended_movies = recommend_by_emotion(input_emotion, movies, num_recommendations)
-    return recommended_movies
+# 아래부터 type 2 인 경우 추천 시 쓰일 함수
+# 유사도 기반 영화 추천
+def recommend_by_similarity(movie_index, cosine_sim_adj, movies, num_recommendations=10):
+    sim_scores = list(enumerate(cosine_sim_adj[movie_index]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    sim_scores = sim_scores[1:num_recommendations+1]
+    movie_indices = [i[0] for i in sim_scores]
+    return movies.iloc[movie_indices]
 
-# Load processed data
+# 감정과 장르를 기반으로 유사도 추천 함수
+def recommend_by_emotion_and_similarity(emotion, movies, cosine_sim_adj, num_recommendations=10):
+    genres = emotion_genre_mapping(emotion)
+    if not genres:
+        return []
+
+    genre_filtered_movies = movies[movies['genres'].apply(lambda x: any(genre in x for genre in genres))]
+    
+    if genre_filtered_movies.empty:
+        return []
+
+    random_movie_index = random.choice(genre_filtered_movies.index)
+    recommended_movies = recommend_by_similarity(random_movie_index, cosine_sim_adj, genre_filtered_movies, num_recommendations)
+    
+    return recommended_movies['title'].tolist()
+
 movies = pd.read_csv("processed_movies.csv")
+cosine_sim_adj = np.load("cosine_sim_adj.npy")
 
 app = func.FunctionApp()
 
@@ -77,7 +78,7 @@ def recommend_movies(req: func.HttpRequest) -> func.HttpResponse:
                 "Please pass an emotion on the query string or in the request body",
                 status_code=400
             )
-        recommended_movies = recommend_type2(input_emotion, movies)
+        recommended_movies = recommend_by_emotion_and_similarity(input_emotion, movies, cosine_sim_adj)
     else:
         return func.HttpResponse(
             "Please pass a valid type (1 or 2) on the query string or in the request body",
