@@ -4,6 +4,7 @@ import numpy as np
 import azure.functions as func
 import random
 import json
+from urllib.parse import quote
 
 # 감정을 장르로 매핑하는 함수
 def emotion_genre_mapping(emotion):
@@ -17,32 +18,36 @@ def emotion_genre_mapping(emotion):
 def recommend_type1(movies, num_recommendations=10):
     top_movies = movies.sort_values(by=['popularity', 'vote_average'], ascending=False).head(50)
     recommended_movies = top_movies.sample(n=num_recommendations, replace=False)
-    return recommended_movies['title'].tolist()
+    titles = recommended_movies['title'].tolist()
+#홈페이지 값이 없는 경우 naver 서치 창에 영화 타이틀을 기입해서 넘기는 걸로
+    homepages = [x if x==x else f"https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query={quote(title)}" for x, title in zip(recommended_movies['homepage'].tolist(), titles)]
+    return titles, homepages
 
-# 아래부터 type 2 인 경우 추천 시 쓰일 함수
+# type 2 에서 활용될 추천 함수들
 # 유사도 기반 영화 추천
 def recommend_by_similarity(movie_index, cosine_sim_adj, movies, num_recommendations=10):
     sim_scores = list(enumerate(cosine_sim_adj[movie_index]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
     sim_scores = sim_scores[1:num_recommendations+1]
     movie_indices = [i[0] for i in sim_scores]
-    return movies.iloc[movie_indices]
+    recommended_movies = movies.iloc[movie_indices]
+    titles = recommended_movies['title'].tolist()
+    homepages = [x if x==x else f"https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query={quote(title)}" for x, title in zip(recommended_movies['homepage'].tolist(), titles)]
+    return titles, homepages
 
 # 감정과 장르를 기반으로 유사도 추천 함수
 def recommend_by_emotion_and_similarity(emotion, movies, cosine_sim_adj, num_recommendations=10):
     genres = emotion_genre_mapping(emotion)
     if not genres:
-        return []
+        return [], []
 
     genre_filtered_movies = movies[movies['genres'].apply(lambda x: any(genre in x for genre in genres))]
     
     if genre_filtered_movies.empty:
-        return []
+        return [], []
 
     random_movie_index = random.choice(genre_filtered_movies.index)
-    recommended_movies = recommend_by_similarity(random_movie_index, cosine_sim_adj, genre_filtered_movies, num_recommendations)
-    
-    return recommended_movies['title'].tolist()
+    return recommend_by_similarity(random_movie_index, cosine_sim_adj, genre_filtered_movies, num_recommendations)
 
 movies = pd.read_csv("processed_movies.csv")
 cosine_sim_adj = np.load("cosine_sim_adj.npy")
@@ -63,7 +68,7 @@ def recommend_movies(req: func.HttpRequest) -> func.HttpResponse:
             preferred_type = req_body.get('type')
 
     if preferred_type == '1':
-        recommended_movies = recommend_type1(movies)
+        titles, homepages = recommend_type1(movies)
     elif preferred_type == '2':
         input_emotion = req.params.get('emotion')
         if not input_emotion:
@@ -78,11 +83,16 @@ def recommend_movies(req: func.HttpRequest) -> func.HttpResponse:
                 "Please pass an emotion on the query string or in the request body",
                 status_code=400
             )
-        recommended_movies = recommend_by_emotion_and_similarity(input_emotion, movies, cosine_sim_adj)
+        titles, homepages = recommend_by_emotion_and_similarity(input_emotion, movies, cosine_sim_adj)
     else:
         return func.HttpResponse(
             "Please pass a valid type (1 or 2) on the query string or in the request body",
             status_code=400
         )
 
-    return func.HttpResponse(json.dumps(recommended_movies), mimetype="application/json")
+    response_data = {
+        "titles": titles,
+        "homepages": homepages
+    }
+
+    return func.HttpResponse(json.dumps(response_data), mimetype="application/json")
