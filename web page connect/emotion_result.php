@@ -82,6 +82,13 @@ unset($_SESSION['emotion_result']);
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+        .movie-list a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .movie-list a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -117,35 +124,28 @@ unset($_SESSION['emotion_result']);
                 },
                 body: JSON.stringify({ emotion: emotion, type: type })
             })
-            .then(response => response.text())
-            .then(text => {
-                console.log('API Response Text:', text);
-                try {
-                    const data = JSON.parse(text);
-                    console.log('API Response JSON:', data);
+            .then(response => response.json())
+            .then(data => {
+                console.log('API Response JSON:', data);
 
-                    var movieList = document.getElementById('movie-list');
-                    movieList.innerHTML = '';
+                var movieList = document.getElementById('movie-list');
+                movieList.innerHTML = '';
 
-                    if (data.error) {
+                if (data.error) {
+                    var li = document.createElement('li');
+                    li.textContent = data.error;
+                    movieList.appendChild(li);
+                } else if (Array.isArray(data.titles) && Array.isArray(data.homepages) && data.titles.length === data.homepages.length) {
+                    data.titles.forEach((title, index) => {
                         var li = document.createElement('li');
-                        li.textContent = data.error;
+                        var homepage = data.homepages[index];
+                        li.innerHTML = `<a href="${homepage}" target="_blank">${title}</a>`; //하이퍼링크로 링크 연결되도록
                         movieList.appendChild(li);
-                    } else if (Array.isArray(data) && data.length > 0) {
-                        data.forEach(movie => {
-                            var li = document.createElement('li');
-                            li.innerHTML = `<strong>${movie}</strong>`;
-                            movieList.appendChild(li);
-                        });
-                    } else {
-                        var li = document.createElement('li');
-                        li.textContent = '추천된 영화가 없습니다.';
-                        movieList.appendChild(li);
-                    }
-                } catch (error) {
-                    console.error('Error parsing JSON:', error);
-                    var movieList = document.getElementById('movie-list');
-                    movieList.innerHTML = '<li>추천된 영화를 가져오는 중 오류가 발생했습니다.</li>';
+                    });
+                } else {
+                    var li = document.createElement('li');
+                    li.textContent = '추천된 영화가 없습니다.';
+                    movieList.appendChild(li);
                 }
             })
             .catch(error => {
