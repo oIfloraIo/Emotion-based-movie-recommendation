@@ -79,8 +79,8 @@ $response = @file_get_contents($apiUrl, false, $context);
 
 if ($response === FALSE) {
     $error = error_get_last();
-    error_log("API request failed. Error: " . $error['message']);
-    echo json_encode(["error" => "영화 추천 API 요청에 실패했습니다."]);
+    error_log("API request failed. Error: " . var_export($error, true));
+    echo json_encode(["error" => "영화 추천 API 요청에 실패했습니다.", "details" => $error['message']]);
     exit();
 }
 
@@ -95,15 +95,17 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     exit();
 }
 
-if (!is_array($recommendedMovies) || empty($recommendedMovies)) {
+if (!is_array($recommendedMovies) || empty($recommendedMovies['titles']) || empty($recommendedMovies['homepages'])) {
     echo json_encode(["error" => "추천된 영화가 없습니다."]);
     exit();
 }
 
-// 영화 제목 목록을 JSON 형식으로 반환
+// 영화 제목과 홈페이지를 JSON 형식으로 반환
 header('Content-Type: application/json');
-echo json_encode($recommendedMovies);
+echo json_encode([
+    "titles" => $recommendedMovies['titles'],
+    "homepages" => $recommendedMovies['homepages']
+]);
 
-// 데이터베이스 연결 종료
 $conn->close();
 ?>
