@@ -20,3 +20,17 @@
    - 지정된 영화와 유사도 행렬을 통해 총 10개의 영화 추천
 4.  감정 고려가 필요하지 않은 타입
      - 평점/인기도 기반 계산 결과 바탕으로 10개의 영화 추천
+
+### 해당 function_app.py를 AZURE FUNCTION APP push
+> AZURE FUNCTION APP 연동 방법 간략히 정리 (본인은 로컬 환경에서 코드 작성 후 push)
+- Azure 에 가입을 하고, 터미널에서 azure core tools 를 터미널에 설치한다
+  [Azure Core Tool 설치](https://learn.microsoft.com/ko-kr/azure/azure-functions/functions-run-local?tabs=macos%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-python)
+  해당 페이지를 잘 따라가다가며 먼저, 함수 앱을 만들어 준다.
+- 그 다음 로컬에 MyFunctionApp 폴더가 생성되는 데, 거기에 있는 파이썬 파일의 코드를 원하는 대로 수정하면 된다.
+     - 추가적으로 활용될 csv, npy 파일도 해당 폴더에 넣어서 한번에 push 해줬다.
+
+`az login` 으로 로그인을 하고
+
+`func start` 는 테스트 실행
+
+`func azure functionapp publish yourfunctionapp` 으로 계속 배포(재배포) 해주었다.
