@@ -5,25 +5,26 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (isset($_SESSION['email']) && isset($_SESSION['username'])) {
-    $email = $_SESSION['email'];
-    $username = $_SESSION['username'];
-    // 세션에서 유저 이름 가져오기
-} else {
-    $email = "";
-    $username = "";
-    return include "access_failed.html";
+if (!isset($_SESSION['email']) || !isset($_SESSION['username'])) {
+    // 사용자 이메일 또는 이름이 세션에 없으면 access_failed.html로
+    header("Location: access_failed.html");
+    exit();
 }
 
-$sql = "SELECT id, title, author, created_at FROM posts";
-$result = $conn->query($sql);
+$email = $_SESSION['email'];
+$username = $_SESSION['username'];
+
+// 로그인 유저가 작성한 게시물 목록을 가져옴
+$sql = "SELECT id, title, author, created_at FROM posts WHERE author = '$username'";
+$result = mysqli_query($conn, $sql);
 $rows = array();
 if ($result && mysqli_num_rows($result) > 0) {
-    while ($row = $result->fetch_assoc()) {
+    while ($row = mysqli_fetch_assoc($result)) {
         $rows[] = $row;
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -158,7 +159,7 @@ if ($result && mysqli_num_rows($result) > 0) {
         <h1>&#9997;게시판&#128172;</h1>
         <div class="button-container">
             <input type="submit" value="게시글 작성하기&#128221;" name="post" onclick="window.location.href='write_post_page.php'">
-            <input type="submit" value="마이페이지로 이동" name="mypage" onclick="window.location.href='my_posts.php'">
+            <input type="submit" value="마이페이지로 이동" name="mypage" onclick="window.location.href='mypage.php'">
             <input type="submit" value="로그아웃" name="logout" onclick="window.location.href='logout.php'">
             <div class="input-container">
                 <form action="get_board_search.php" name="find_title" method="post" autocomplete="off">
