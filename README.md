@@ -28,6 +28,8 @@ __1-5 단계에 걸쳐서 개인별 일기에 맞춰진 영화 추천이 이뤄�
 
 [파일 공유 드라이브](https://drive.google.com/drive/folders/1xcN94-NKcXJCZDwve91HSPjvob1ljC04?usp=drive_link)
 
+*해당 공유 드라이브에는 영화 추천 로직 구성 코드와 데이터셋 / npm 파일 생성 코드를 비롯해 함수 앱 배포시 필요한 파일(MyFunctionApp.zip)과 전체 웹 페이지 구성 코드들(aicloud.zip)이 zip 파일이 업로드되어 있음*
+
 ---
 ## 영화 추천 로직 관련 내용 정리
 ### 영화 추천 로직 소개
@@ -69,7 +71,7 @@ __1-5 단계에 걸쳐서 개인별 일기에 맞춰진 영화 추천이 이뤄�
 
 `func start` 는 테스트 실행
 
-`func azure functionapp publish yourfunctionapp` 으로 계속 배포(재배포) 해주었다.
+`func azure functionapp publish yourfunctionapp` 으로 배포(재배포~~수정 시~~) 해주었다.
 
 ---
 ## 웹 페이지 구성 관련 내용 정리
@@ -77,15 +79,16 @@ __1-5 단계에 걸쳐서 개인별 일기에 맞춰진 영화 추천이 이뤄�
 - 로그인 페이지
 - 회원가입 페이지
 - 게시글 확인 페이지
-- 마이 페이지 (정보[] 수정 / )
+- 마이 페이지 (회원정보[회원 유형, 비밀번호] 수정 / 자신의 게시물 삭제 기능)
+- 일기 업로드 페이지 (업로드된 일기 텍스트 분석 -> 감정 파악 / 파악된 감정으로 영화 추천까지)
 
 ### 전달 받은 코드 내용 정리
+__일단 코드는 제공하지 않음 제공되는 코드는 내가 주요 내용 추가하여 수정된 경우의 코드만 제공__
 
 > 5/19 전달
 
-__일단 코드는 제공하지 않음 제공되는 코드는 내가 주요 내용 추가하여 수정된 경우의 코드만 제공__
+전달받은 코드는
 
-5/19 일자에 전달받은 코드에는
 1. 로그인 페이지 (Login_page.html / Login_page.php / Login.php / Logout.php)
 2. 회원가입 페이지 (Join_page.html / Join.php)
    - 아이디 / 이름 중복 확인 기능 (check_duplicate_name.php / check_duplicate.php)
@@ -96,10 +99,11 @@ __일단 코드는 제공하지 않음 제공되는 코드는 내가 주요 내�
 
 이 제공되어있다.
 
-<img width="762" alt="스크린샷 2024-06-07 오후 12 43 32" src="https://github.com/oIfloraIo/Emotion-based-movie-recommendation/assets/102645357/0f14ea5e-2aa0-4c77-9e7c-ecb40052ccb0">
+<img width="350" alt="스크린샷 2024-06-07 오후 12 43 32" src="https://github.com/oIfloraIo/Emotion-based-movie-recommendation/assets/102645357/0f14ea5e-2aa0-4c77-9e7c-ecb40052ccb0">
 
 
 > 5/30 전달
+
 추가/수정된 코드 파일 (작동되는 부분)
 - 게시물 작성 후, 감정 분석이 이뤄지는 페이지
     (write_post_page.php)
@@ -107,7 +111,7 @@ __일단 코드는 제공하지 않음 제공되는 코드는 내가 주요 내�
 오류/정상 작동이 안되는 파일
 - emotion_result.php , recommend_movies.php , Join.php / Join_page.html
 
-<img width="765" alt="스크린샷 2024-06-07 오후 2 27 19" src="https://github.com/oIfloraIo/Emotion-based-movie-recommendation/assets/102645357/18e400e3-36be-4cc5-9685-4e5171701d43">
+<img width="350" alt="스크린샷 2024-06-07 오후 2 27 19" src="https://github.com/oIfloraIo/Emotion-based-movie-recommendation/assets/102645357/18e400e3-36be-4cc5-9685-4e5171701d43">
 
 emotion_result.php 와 recommend_movies.php 의 경우에는
 
