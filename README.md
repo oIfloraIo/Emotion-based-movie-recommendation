@@ -31,7 +31,7 @@ __1-5 단계에 걸쳐서 개인별 일기에 맞춰진 영화 추천이 이뤄�
 
 [파일 공유 드라이브](https://drive.google.com/drive/folders/1xcN94-NKcXJCZDwve91HSPjvob1ljC04?usp=drive_link)
 
-*해당 공유 드라이브에는 영화 추천 로직 구성 코드와 데이터셋 / npm 파일 생성 코드를 비롯해 함수 앱 배포시 필요한 파일(MyFunctionApp.zip)과 전체 웹 페이지 구성 코드들(aicloud.zip)이 zip 파일이 업로드되어 있음*
+*해당 공유 드라이브에는 영화 추천 로직 구성 코드와 데이터셋 / npm 파일 생성 코드를 비롯해 함수 앱 배포시 필요한 파일(MyFunctionApp.zip)과 전체 웹 페이지 구성 코드들(aicloud.zip)이 zip 파일 업로드되어 있음*
 
 ---
 ## 영화 추천 로직 관련 내용 정리
@@ -85,6 +85,8 @@ __1-5 단계에 걸쳐서 개인별 일기에 맞춰진 영화 추천이 이뤄�
 - 마이 페이지 (회원정보[회원 유형, 비밀번호] 수정 / 자신의 게시물 삭제 기능)
 - 일기 업로드 페이지 (업로드된 일기 텍스트 분석 -> 감정 파악 / 파악된 감정으로 영화 추천까지)
 
+[관련 코드](https://github.com/oIfloraIo/Emotion-based-movie-recommendation/tree/main/web%20page%20connect)
+
 ### 전달 받은 코드 내용 정리
 __일단 코드는 제공하지 않음 제공되는 코드는 내가 주요 내용 추가하여 수정된 경우의 코드만 제공__
 
@@ -116,12 +118,8 @@ __일단 코드는 제공하지 않음 제공되는 코드는 내가 주요 내�
 
 <img width="350" alt="스크린샷 2024-06-07 오후 2 27 19" src="https://github.com/oIfloraIo/Emotion-based-movie-recommendation/assets/102645357/18e400e3-36be-4cc5-9685-4e5171701d43">
 
-emotion_result.php 와 recommend_movies.php 의 경우에는
+emotion_result.php 와 recommend_movies.php에서 확인된
 
 기존 제공받은 코드에서 type 선언이 통일되지 않아 입력값 전달이 Null 값이 전달되었던 문제,
 
-함수 앱 api 연결이 안되어 있어 결과값이 불러와지지 않는 문제에 대한 수정하여 업로드 함.
-
-[수정/추가하여 실행한 코드 파일](https://github.com/oIfloraIo/Emotion-based-movie-recommendation/tree/main/web%20page%20connect)
-
-__직접 수정한 코드들은 web page connect 폴더(위의 링크)에 업로드 되어 있음__
+함수 앱 api 연결이 안되어 있어 결과값이 불러와지지 않는 문제에 대해 수정하여 업로드 함.
